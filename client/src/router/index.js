@@ -1,15 +1,15 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Home from '../views/Home.vue';
-import Ping from '../views/Ping.vue';
+import Ping from '../components/Ping.vue';
+import Books from '../components/Books.vue';
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home,
+    name: 'Books',
+    component: Books,
   },
   {
     path: '/about',

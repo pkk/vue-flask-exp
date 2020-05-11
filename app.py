@@ -4,6 +4,23 @@ from flask_cors import CORS
 
 # configuration
 DEBUG = True
+BOOKS = [
+    {
+        'title': 'On the Road',
+        'author': 'Jack Kerouac',
+        'read': True
+    },
+    {
+        'title': 'Harry Potter and the Philosophe\'s Store',
+        'author': 'J. K. Rowling',
+        'read': False
+    },
+    {
+        'title': 'Green Eggs and Ham',
+        'author': 'Dr. Seuss',
+        'read': True
+    },
+]
 
 # instantiate the app
 app = Flask(__name__)
@@ -18,6 +35,12 @@ CORS(app, resources={r'/*': {'origins': '*'}})
 def ping_pong():
     return jsonify('pong!')
 
+@app.route('/books', methods=['GET'])
+def get_books():
+    return jsonify({
+        'status': 'success',
+        'books': BOOKS,
+    })
 
 if __name__ == '__main__':
     app.run()
