@@ -1,21 +1,25 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+import uuid
 
 
 # configuration
 DEBUG = True
 BOOKS = [
     {
+        'id': uuid.uuid4().hex,
         'title': 'On the Road',
         'author': 'Jack Kerouac',
         'read': True
     },
     {
+        'id': uuid.uuid4().hex,
         'title': 'Harry Potter and the Philosophe\'s Store',
         'author': 'J. K. Rowling',
         'read': False
     },
     {
+        'id': uuid.uuid4().hex,
         'title': 'Green Eggs and Ham',
         'author': 'Dr. Seuss',
         'read': True
@@ -39,15 +43,43 @@ def ping_pong():
 def get_books():
     response_object = {'status': 'Success'}
     if request.method == 'POST':
+        data = request.get_json()
         BOOKS.append({
-            'title': request.form['title'],
-            'author': request.form['author'],
-            'read': request.form['read'],
+            'id': uuid.uuid4().hex,
+            'title': data.get('title'),
+            'author': data.get('author'),
+            'read': data.get('read'),
         })
         response_object['message'] = 'Books Added'
     else:
         response_object['books'] = BOOKS
     return jsonify(response_object)
+
+@app.route('/books/<book_id>', methods=['PUT', 'DELETE'])
+def single_book(book_id):
+    response_object = {'status': 'Success'}
+    if (request.method == 'PUT'):
+        post_data = request.get_json()
+        remove_book(book_id)
+        BOOKS.append({
+            'id': uuid.uuid4().hex,
+            'title': post_data.get('title'),
+            'author': post_data.get('author'),
+            'read': post_data.get('read'),
+        })
+        response_object['message'] = 'Book updated!'
+    if (request.method == 'DELETE'):
+        remove_book(book_id)
+        response_object['message'] = 'Book deleted!'
+    return jsonify(response_object)
+
+def remove_book(book_id):
+    for book in BOOKS:
+        print(book.get('id'))
+        if book.get('id') == book_id:
+            BOOKS.remove(book)
+            return True
+    return False
 
 if __name__ == '__main__':
     app.run()
