@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 
@@ -35,12 +35,19 @@ CORS(app, resources={r'/*': {'origins': '*'}})
 def ping_pong():
     return jsonify('pong!')
 
-@app.route('/books', methods=['GET'])
+@app.route('/books', methods=['GET', 'POST'])
 def get_books():
-    return jsonify({
-        'status': 'success',
-        'books': BOOKS,
-    })
+    response_object = {'status': 'Success'}
+    if request.method == 'POST':
+        BOOKS.append({
+            'title': request.form['title'],
+            'author': request.form['author'],
+            'read': request.form['read'],
+        })
+        response_object['message'] = 'Books Added'
+    else:
+        response_object['books'] = BOOKS
+    return jsonify(response_object)
 
 if __name__ == '__main__':
     app.run()
